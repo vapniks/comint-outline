@@ -95,12 +95,11 @@ when `comint-outline-start' is called."
 		:value-type (function :tag "Command")))
 
 ;;;###autoload
-(cl-defun comint-outline-start (&optional (regexp comint-prompt-regexp)
-					  (levelfn (lambda nil 1)) &rest pairs)
+(cl-defun comint-outline-start (&optional regexp levelfn &rest pairs)
   "Enable `outline-minor-mode-map' in the current buffer, and override some keys.
-Set `outline-regexp' to REGEXP, and variable `outline-level' to LEVELFN.
-By default `outline-regexp' is set to `comint-prompt-regexp', and `outline-level'
-is set to (lambda nil 1). 
+By default `outline-regexp' is set to `comint-prompt-regexp' (with any initial \"^\" removed), 
+and `outline-level' is set to (lambda nil 1). You can change this with the REGEXP and LEVELFN 
+arguments respectively.
 The arguments PAIRS is a list of cons cells of the form '(KEY . CMD),
 defining keys in `outline-minor-mode-map' to be overridden.
 The keybindings in `comint-outline-override-keys' will always be used.
@@ -116,8 +115,12 @@ e.g: (comint-outline-start \">>> \" (lambda nil 1)
     (cl-loop for (key . func) in pairs
 	     do (define-key map (kbd key) func))
     (push (cons 'outline-minor-mode map) minor-mode-overriding-map-alist))
-  (setq outline-regexp regexp
-	outline-level levelfn))
+  (setq outline-regexp (or regexp (substring comint-prompt-regexp
+					     ;; remove initial "^" if necessary
+					     (if (eq (aref comint-prompt-regexp 0) ?^)
+						 1
+					       0)))
+	outline-level (or levelfn (lambda nil 1))))
 
 ;; altered version of `outline-on-heading-p' that works even if heading is in a different field
 ;; (e.g. in some comint buffers), so that you can hide/show their contents.
