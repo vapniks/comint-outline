@@ -10,8 +10,9 @@ The function `comint-outline-start` should be called from a hook function for th
 	  (lambda nil (comint-outline-start "In \\[[0-9]+\\]: .*")))
 ```
 If you don't supply any arguments to `comint-outline-start` it should still work
-in most comint buffers, but you may find that it also treats some output lines as headers,
-and so you may want to specify the value of `outline-regexp` in the first argument.
+in most comint buffers as it uses `comint-prompt-regexp` as the default value for 
+`outline-regexp`. However, if you find that it treats some output lines as headers, 
+you should specify the value of `outline-regexp` in the first argument to `comint-outline-start`.
 
 The option `comint-outline-override-keys` contains a list of keys to override default
 bindings in `outline-minor-mode-map`, and you can add more as arguments to `comint-outline-start`.
