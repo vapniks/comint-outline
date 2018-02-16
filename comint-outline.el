@@ -89,10 +89,33 @@
     ("<M-down>" . comint-next-prompt)
     ("<M-left>" . outline-hide-entry)
     ("<M-right>" . outline-show-entry))
-  "List of '(KEY . CMD) cons cells defining keybindings to override the ones in `outline-minor-mode-map'
+  "Alist of '(KEY . CMD) cons cells defining keybindings to override the ones in `outline-minor-mode-map'
 when `comint-outline-start' is called."
   :type '(alist :key-type (string :tag "Keybinding")
 		:value-type (function :tag "Command")))
+
+(defcustom comint-outline-regexp
+  '((py-ipython-shell-mode . "In \\[[0-9]+\\]: .*")
+    (py-python-shell-mode . ">>> .*")
+    (inferior-ess-mode
+     ((eq ess-dialect "R")
+      . "> .*")
+     ((eq ess-dialect "stata")
+      . "\\. .*"))
+    (shell-mode . shell-prompt-pattern))
+  "Alist of regexp's to be used for `outline-regexp' in different comint modes.
+The car of each element is the major-mode symbol for the comint buffer,
+and the cdr can be either a regexp, a variable containing a regexp
+or a list of (SEXP . REGEXP/VAR) pairs.
+In the latter case each SEXP will be evalled in turn until one of them returns non-nil, 
+in which case the corresponding regexp or variable will be used."
+  :type '(alist :key-type (symbol :tag "Major mode")
+		:value-type (choice regexp
+				    (symbol :tag "Variable")
+				    (repeat
+				     (cons (sexp :tag "Predicate sexp")
+					   (choice regexp
+						   (symbol :tag "Variable")))))))
 
 ;;;###autoload
 (cl-defun comint-outline-start (&optional regexp levelfn &rest pairs)
