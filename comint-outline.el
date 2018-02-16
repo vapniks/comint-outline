@@ -45,19 +45,10 @@
 ;; Bitcoin donations gratefully accepted: 1ArFina3Mi8UDghjarGqATeBgXRDWrsmzo
 ;;
 ;; This package allows you to use `outline-minor-mode' for hiding/showing output
-;; blocks in `comint-mode' buffers, e.g. ESS, shell, python buffers.
-;; The function `comint-outline-start' should be called from a hook function for the
-;; `comint-mode' buffer, e.g:
-;; (add-hook 'py-ipython-shell-mode-hook
-;; 	  (lambda nil (comint-outline-start "In \\[[0-9]+\\]: .*")))
-;;
-;; If you don't supply any arguments to `comint-outline-start' it should still work
-;; in most comint buffers as it uses `comint-prompt-regexp' as the default value for 
-;; `outline-regexp`. However, if you find that it treats some output lines as headers, 
-;; you should specify the value of `outline-regexp' in the first argument to `comint-outline-start'.
-;;
-;; The option `comint-outline-override-keys' contains a list of keys to override default
-;; bindings in `outline-minor-mode-map', and you can add more as arguments to `comint-outline-start'.
+;; blocks in `comint-mode' buffers, e.g. ESS, shell, python, and SQL buffers.
+;; The function `comint-outline-start' is added to `comint-mode-hook' which will
+;; bind the keys defined in `comint-outline-override-keys', and set `outline-regexp'
+;; according to the values in `comint-outline-regexp' (which can be customized).
 ;;
 ;; WARNING: this package overwrites `outline-on-heading-p' which is defined in outline.el.
 ;;          This shouldn't cause any problems since it only makes a minor change to allow it to
@@ -109,7 +100,9 @@ The car of each element is the `major-mode' symbol for the comint buffer,
 and the cdr can be either a regexp, a variable containing a regexp
 or a list of (SEXP . REGEXP/VAR) pairs.
 In the latter case each SEXP will be evalled in the comint buffer until one of
-them returns non-nil, in which case the corresponding regexp or variable will be used."
+them returns non-nil, in which case the corresponding regexp or variable will be used.
+
+For buffers not matching any of the entries in this list, `comint-prompt-regexp' will be used."
   :type '(alist :key-type (symbol :tag "Major mode")
 		:value-type (choice regexp
 				    (symbol :tag "Variable")
@@ -162,7 +155,7 @@ If INVISIBLE-OK is non-nil, an invisible heading line is ok too."
     (and (bolp) (or invisible-ok (not (outline-invisible-p)))
 	 (looking-at outline-regexp))))
 
-
+(add-hook 'comint-mode-hook 'comint-outline-start)
 
 (provide 'comint-outline)
 
