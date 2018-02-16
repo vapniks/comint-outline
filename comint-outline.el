@@ -46,9 +46,10 @@
 ;;
 ;; This package allows you to use `outline-minor-mode' for hiding/showing output
 ;; blocks in `comint-mode' buffers, e.g. ESS, shell, python, and SQL buffers.
-;; The function `comint-outline-start' is added to `comint-mode-hook' which will
-;; bind the keys defined in `comint-outline-override-keys', and set `outline-regexp'
-;; according to the values in `comint-outline-regexp' (which can be customized).
+;; After adding `comint-outline-start' to `comint-mode-hook' (see below), when `comint-mode'
+;; is started the keys defined in `comint-outline-override-keys' will be bound,
+;; and `outline-regexp' will be set according to the values in `comint-outline-regexp'.
+;; Both `comint-outline-override-keys' and `comint-outline-regexp' can be customized.
 ;;
 ;; WARNING: this package overwrites `outline-on-heading-p' which is defined in outline.el.
 ;;          This shouldn't cause any problems since it only makes a minor change to allow it to
@@ -66,6 +67,7 @@
 ;; Add the following to your ~/.emacs startup file.
 ;;
 ;; (require 'comint-outline)
+;; (add-hook 'comint-mode-hook 'comint-outline-start)
 
 ;;; History:
 
@@ -154,8 +156,6 @@ If INVISIBLE-OK is non-nil, an invisible heading line is ok too."
     (forward-line 0)
     (and (bolp) (or invisible-ok (not (outline-invisible-p)))
 	 (looking-at outline-regexp))))
-
-(add-hook 'comint-mode-hook 'comint-outline-start)
 
 (provide 'comint-outline)
 
