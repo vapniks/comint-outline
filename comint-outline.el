@@ -97,18 +97,19 @@ when `comint-outline-start' is called."
 (defcustom comint-outline-regexp
   '((py-ipython-shell-mode . "In \\[[0-9]+\\]: .*")
     (py-python-shell-mode . ">>> .*")
-    (inferior-ess-mode
-     ((eq ess-dialect "R")
-      . "> .*")
-     ((eq ess-dialect "stata")
-      . "\\. .*"))
-    (shell-mode . shell-prompt-pattern))
+    (inferior-ess-mode ((equal ess-dialect "R")
+			. "> .*")
+		       ((equal ess-dialect "stata")
+			. "\\. .*"))
+    (shell-mode . shell-prompt-pattern)
+    (sql-interactive-mode ((memq sql-dialect '(sqlite sqlcipher)) . "sqlite> .*")
+			  ((eq sql-dialect 'postgres) . "\\w*\\(=\\|[-(]\\)[#>] ")))
   "Alist of regexp's to be used for `outline-regexp' in different comint modes.
-The car of each element is the major-mode symbol for the comint buffer,
+The car of each element is the `major-mode' symbol for the comint buffer,
 and the cdr can be either a regexp, a variable containing a regexp
 or a list of (SEXP . REGEXP/VAR) pairs.
-In the latter case each SEXP will be evalled in turn until one of them returns non-nil, 
-in which case the corresponding regexp or variable will be used."
+In the latter case each SEXP will be evalled in the comint buffer until one of
+them returns non-nil, in which case the corresponding regexp or variable will be used."
   :type '(alist :key-type (symbol :tag "Major mode")
 		:value-type (choice regexp
 				    (symbol :tag "Variable")
@@ -138,11 +139,17 @@ e.g: (comint-outline-start \">>> \" (lambda nil 1)
     (cl-loop for (key . func) in pairs
 	     do (define-key map (kbd key) func))
     (push (cons 'outline-minor-mode map) minor-mode-overriding-map-alist))
-  (setq outline-regexp (or regexp (substring comint-prompt-regexp
-					     ;; remove initial "^" if necessary
-					     (if (eq (aref comint-prompt-regexp 0) ?^)
-						 1
-					       0)))
+  (setq outline-regexp (or regexp
+			   (let ((val (cdr (assoc major-mode comint-outline-regexp))))
+			     (cond ((stringp val) val)
+				   ((symbolp val) (eval val))
+				   ((listp val)
+				    (cdr (cl-assoc-if (lambda (v) (eval v)) val)))))
+			   (substring comint-prompt-regexp
+				      ;; remove initial "^" if necessary
+				      (if (eq (aref comint-prompt-regexp 0) ?^)
+					  1
+					0)))
 	outline-level (or levelfn (lambda nil 1))))
 
 ;; altered version of `outline-on-heading-p' that works even if heading is in a different field
