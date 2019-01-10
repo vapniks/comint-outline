@@ -84,6 +84,7 @@
     ("<M-right>" . outline-show-entry))
   "Alist of '(KEY . CMD) cons cells defining keybindings to override the ones in `outline-minor-mode-map'
 when `comint-outline-start' is called."
+  :group 'comint
   :type '(alist :key-type (string :tag "Keybinding")
 		:value-type (function :tag "Command")))
 
@@ -99,14 +100,16 @@ when `comint-outline-start' is called."
 			  ((eq sql-dialect 'postgres) . "\\w*\\(=\\|[-(]\\)[#>] ")))
   "Alist of regexp's to be used for `outline-regexp' in different comint modes.
 The car of each element is the `major-mode' symbol for the comint buffer,
-and the cdr can be either a regexp, a variable containing a regexp
-or a list of (SEXP . REGEXP/VAR) pairs.
+and the cdr can be either a regexp, a function of one argument (the buffer name), 
+a variable containing a regexp, or a list of (SEXP . REGEXP/VAR) pairs.
 In the latter case each SEXP will be evalled in the comint buffer until one of
 them returns non-nil, in which case the corresponding regexp or variable will be used.
 
 For buffers not matching any of the entries in this list, `comint-prompt-regexp' will be used."
+  :comint 'group
   :type '(alist :key-type (symbol :tag "Major mode")
 		:value-type (choice regexp
+				    (function :tag "Function")
 				    (symbol :tag "Variable")
 				    (repeat
 				     (cons (sexp :tag "Predicate sexp")
@@ -124,8 +127,11 @@ defining keys in `outline-minor-mode-map' to be overridden.
 The keybindings in `comint-outline-override-keys' will always be used.
 Also `outshine-hook-function' will be called.
 e.g: (comint-outline-start \">>> \" (lambda nil 1)
-			      '(\"<M-up>\" . comint-previous-prompt)
-			      '(\"<M-down>\" . comint-next-prompt))"
+			      '(\"<M-up>\" . outline-previous-visible-heading)
+			      '(\"<M-down>\" . comint-next-prompt))
+
+Note: for some buffers `comint-previous-prompt' &/or `comint-next-prompt' dont work well, 
+you could try `outline-previous-visible-heading' & `outline-next-visible-heading' instead."
   (outline-minor-mode 1)
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map outline-minor-mode-map)
@@ -137,6 +143,7 @@ e.g: (comint-outline-start \">>> \" (lambda nil 1)
   (setq outline-regexp (or regexp
 			   (let ((val (cdr (assoc major-mode comint-outline-regexp))))
 			     (cond ((stringp val) val)
+				   ((functionp val) (funcall val (buffer-name)))
 				   ((symbolp val) (eval val))
 				   ((listp val)
 				    (cdr (cl-assoc-if (lambda (v) (eval v)) val)))))
