@@ -157,6 +157,8 @@ you could try `outline-previous-visible-heading' & `outline-next-visible-heading
 			 (args-out-of-range pairs)
 			 (error (signal (car err) (cdr err)))))))
   (if (called-interactively-p 'any) (setq pairs (car pairs)))
+  (if (member comint-prompt-regexp '("^" ""))
+      (setq-local comint-prompt-regexp regexp))
   (outline-minor-mode 1)
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map outline-minor-mode-map)
