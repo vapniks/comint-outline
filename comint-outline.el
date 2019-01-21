@@ -132,6 +132,31 @@ e.g: (comint-outline-start \">>> \" (lambda nil 1)
 
 Note: for some buffers `comint-previous-prompt' &/or `comint-next-prompt' dont work well, 
 you could try `outline-previous-visible-heading' & `outline-next-visible-heading' instead."
+  (interactive (list (read-regexp "Regexp to match outline headings: "
+				  (or (let ((val (cdr (assoc major-mode comint-outline-regexp))))
+					(cond ((stringp val) val)
+					      ((functionp val) (funcall val (buffer-name)))
+					      ((symbolp val) (eval val))
+					      ((listp val)
+					       (cdr (cl-assoc-if (lambda (v) (eval v)) val)))))
+				      (substring comint-prompt-regexp
+						 ;; remove initial "^" if necessary
+						 (if (eq (aref comint-prompt-regexp 0) ?^)
+						     1
+						   0))))
+		     (read-from-minibuffer "Function to determine outline level (default = level 1 for all headers): "
+					   nil nil t nil "(lambda nil 1)")
+		     (let (pairs)
+		       (condition-case err
+			   (while t
+			     (let (key cmd)
+			       (setq key (read-key-sequence "Key sequence (C-g to finish): " nil nil nil t))
+			       (if (member key '("" "")) (signal 'args-out-of-range nil))
+			       (setq cmd (read-command "Command: "))
+			       (push (cons (key-description key) cmd) pairs)))
+			 (args-out-of-range pairs)
+			 (error (signal (car err) (cdr err)))))))
+  (if (called-interactively-p 'any) (setq pairs (car pairs)))
   (outline-minor-mode 1)
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map outline-minor-mode-map)
