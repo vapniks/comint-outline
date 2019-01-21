@@ -121,7 +121,7 @@ For buffers not matching any of the entries in this list, `comint-prompt-regexp'
   "Enable `outline-minor-mode-map' in the current buffer, and override some keys.
 By default `outline-regexp' is set using `comint-outline-regexp' or `comint-prompt-regexp'
  (with any initial \"^\" removed), and `outline-level' is set to (lambda nil 1). 
-You can change this with the REGEXP and LEVELFN arguments respectively.
+You can change this with the REGEXP and LEVELFN arguments respectively, or interactively.
 The arguments PAIRS is a list of cons cells of the form '(KEY . CMD),
 defining keys in `outline-minor-mode-map' to be overridden.
 The keybindings in `comint-outline-override-keys' will always be used.
