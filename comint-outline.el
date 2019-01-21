@@ -123,7 +123,7 @@ By default `outline-regexp' is set using `comint-outline-regexp' or `comint-prom
  (with any initial \"^\" removed), and `outline-level' is set to (lambda nil 1). 
 You can change this with the REGEXP and LEVELFN arguments respectively, or interactively.
 The arguments PAIRS is a list of cons cells of the form '(KEY . CMD),
-defining keys in `outline-minor-mode-map' to be overridden.
+defining keys in `outline-minor-mode-map' to be overridden. This can also be set interactively.
 The keybindings in `comint-outline-override-keys' will always be used.
 Also `outshine-hook-function' will be called.
 e.g: (comint-outline-start \">>> \" (lambda nil 1)
