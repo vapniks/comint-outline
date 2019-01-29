@@ -1,0 +1,37 @@
+* Commentary
+Bitcoin donations gratefully accepted: 1ArFina3Mi8UDghjarGqATeBgXRDWrsmzo
+
+This package allows you to use =outline-minor-mode= for hiding/showing output
+blocks in =comint-mode= buffers, e.g. ESS, shell, python, and SQL buffers.
+After adding =comint-outline-start= to =comint-mode-hook= (see below), when =comint-mode=
+is started the keys defined in =comint-outline-override-keys= will be bound,
+and =outline-regexp= will be set according to the values in =comint-outline-regexp=.
+Both =comint-outline-override-keys= and =comint-outline-regexp= can be customized.
+
+WARNING: this package overwrites =outline-on-heading-p= which is defined in outline.el.
+This shouldn't cause any problems since it only makes a minor change to allow it to
+detect outline headings in text fields such as comint prompts.
+
+
+* Installation
+
+To make sure you have the most up-to-date version of this library it is best to install 
+using the emacs package system, with the appropriate repository added (e.g https://melpa.org/)
+
+To install without using a package manager:
+
+ - Put the library in a directory in the emacs load path, like ~/.emacs.d/
+ - Add the following lines to your ~/.emacs file:
+   (require 'comint-outline)
+   (add-hook 'comint-mode-hook 'comint-outline-start)
+
+* Customizable Options
+
+ Below is a list of customizable options:
+
+   - *comint-outline-override-keys* :
+    Alist of '(KEY . CMD) cons cells defining keybindings to override the ones in  - *outline-minor-mode-map* :\\
+    default value: =(quote (("<M-up>" . comint-previous-prompt) ("<M-down>" . comint-next-prompt) ("<M-left>" . outline-hide-entry) ("<M-right>" . outline-show-entry)))=
+   - *comint-outline-regexp* :
+    Alist of regexp's to be used for  - *outline-regexp* : in different comint modes.\\
+    default value: =(quote ((erc-mode lambda ... ...) (py-ipython-shell-mode . "In \\[[0-9]+\\]: .*") (py-python-shell-mode . ">>> .*") (inferior-ess-mode ... ...) (shell-mode . shell-prompt-pattern) ...))=

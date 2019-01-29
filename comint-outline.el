@@ -7,9 +7,9 @@
 ;; Copyleft (Ↄ) 2018, Joe Bloggs, all rites reversed.
 ;; Created: 2018-02-15 13:27:18
 ;; Version: 20190122.249
-;; Last-Updated: Tue Jan 22 02:49:11 2019
+;; Last-Updated: Tue Jan 29 23:32:09 2019
 ;;           By: Joe Bloggs
-;;     Update #: 8
+;;     Update #: 9
 ;; URL: https://github.com/vapniks/comint-outline
 ;; Keywords: convenience 
 ;; Compatibility: GNU Emacs 25.2.1
@@ -43,25 +43,20 @@
 ;;; Commentary: 
 ;; 
 ;; Bitcoin donations gratefully accepted: 1ArFina3Mi8UDghjarGqATeBgXRDWrsmzo
-;;
+;; 
 ;; This package allows you to use `outline-minor-mode' for hiding/showing output
 ;; blocks in `comint-mode' buffers, e.g. ESS, shell, python, and SQL buffers.
 ;; After adding `comint-outline-start' to `comint-mode-hook' (see below), when `comint-mode'
 ;; is started the keys defined in `comint-outline-override-keys' will be bound,
 ;; and `outline-regexp' will be set according to the values in `comint-outline-regexp'.
 ;; Both `comint-outline-override-keys' and `comint-outline-regexp' can be customized.
-;;
+;; 
 ;; WARNING: this package overwrites `outline-on-heading-p' which is defined in outline.el.
-;;          This shouldn't cause any problems since it only makes a minor change to allow it to
-;;          detect outline headings in text fields such as comint prompts.
-;;
+;; This shouldn't cause any problems since it only makes a minor change to allow it to
+;; detect outline headings in text fields such as comint prompts.
+;; 
 ;;;;;;;;
 
-;;; Commands:
-;;
-;; Below is a complete list of commands:
-;;
-;;
 ;;; Customizable Options:
 ;;
 ;; Below is a list of customizable options:
@@ -71,7 +66,7 @@
 ;;    default = (quote (("<M-up>" . comint-previous-prompt) ("<M-down>" . comint-next-prompt) ("<M-left>" . outline-hide-entry) ("<M-right>" . outline-show-entry)))
 ;;  `comint-outline-regexp'
 ;;    Alist of regexp's to be used for `outline-regexp' in different comint modes.
-;;    default = (quote ((py-ipython-shell-mode . "In \\[[0-9]+\\]: .*") (py-python-shell-mode . ">>> .*") (inferior-ess-mode ... ...) (shell-mode . shell-prompt-pattern) (sql-interactive-mode ... ...)))
+;;    default = (quote ((erc-mode lambda ... ...) (py-ipython-shell-mode . "In \\[[0-9]+\\]: .*") (py-python-shell-mode . ">>> .*") (inferior-ess-mode ... ...) (shell-mode . shell-prompt-pattern) ...))
 
 ;;; Installation:
 ;;
