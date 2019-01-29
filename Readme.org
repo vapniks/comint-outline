@@ -21,7 +21,7 @@ using the emacs package system, with the appropriate repository added (e.g https
 To install without using a package manager:
 
  - Put the library in a directory in the emacs load path, like ~/.emacs.d/
- - Add the following lines to your ~/.emacs file:
+ - Add the following lines to your ~/.emacs file:\\
    =(require 'comint-outline)=\\
    =(add-hook 'comint-mode-hook 'comint-outline-start)=
 
