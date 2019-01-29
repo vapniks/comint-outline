@@ -22,16 +22,16 @@ To install without using a package manager:
 
  - Put the library in a directory in the emacs load path, like ~/.emacs.d/
  - Add the following lines to your ~/.emacs file:
-   (require 'comint-outline)
-   (add-hook 'comint-mode-hook 'comint-outline-start)
+   =(require 'comint-outline)=\\
+   =(add-hook 'comint-mode-hook 'comint-outline-start)=
 
 * Customizable Options
 
  Below is a list of customizable options:
 
    - *comint-outline-override-keys* :
-    Alist of '(KEY . CMD) cons cells defining keybindings to override the ones in  - *outline-minor-mode-map* :\\
+    Alist of '(KEY . CMD) cons cells defining keybindings to override the ones in *outline-minor-mode-map* :\\
     default value: =(quote (("<M-up>" . comint-previous-prompt) ("<M-down>" . comint-next-prompt) ("<M-left>" . outline-hide-entry) ("<M-right>" . outline-show-entry)))=
    - *comint-outline-regexp* :
-    Alist of regexp's to be used for  - *outline-regexp* : in different comint modes.\\
+    Alist of regexp's to be used for *outline-regexp* in different comint modes.\\
     default value: =(quote ((erc-mode lambda ... ...) (py-ipython-shell-mode . "In \\[[0-9]+\\]: .*") (py-python-shell-mode . ">>> .*") (inferior-ess-mode ... ...) (shell-mode . shell-prompt-pattern) ...))=
