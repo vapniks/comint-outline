@@ -6,10 +6,10 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2018, Joe Bloggs, all rites reversed.
 ;; Created: 2018-02-15 13:27:18
-;; Version: 0.1
-;; Last-Updated: 2018-02-15 13:27:18
+;; Version: 20190122.249
+;; Last-Updated: Tue Jan 22 02:49:11 2019
 ;;           By: Joe Bloggs
-;;     Update #: 1
+;;     Update #: 8
 ;; URL: https://github.com/vapniks/comint-outline
 ;; Keywords: convenience 
 ;; Compatibility: GNU Emacs 25.2.1
@@ -41,7 +41,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Commentary: 
-;;
+;; 
 ;; Bitcoin donations gratefully accepted: 1ArFina3Mi8UDghjarGqATeBgXRDWrsmzo
 ;;
 ;; This package allows you to use `outline-minor-mode' for hiding/showing output
@@ -53,8 +53,25 @@
 ;;
 ;; WARNING: this package overwrites `outline-on-heading-p' which is defined in outline.el.
 ;;          This shouldn't cause any problems since it only makes a minor change to allow it to
-;;          detect outline headings in text fields such as comint prompts. 
+;;          detect outline headings in text fields such as comint prompts.
+;;
 ;;;;;;;;
+
+;;; Commands:
+;;
+;; Below is a complete list of commands:
+;;
+;;
+;;; Customizable Options:
+;;
+;; Below is a list of customizable options:
+;;
+;;  `comint-outline-override-keys'
+;;    Alist of '(KEY . CMD) cons cells defining keybindings to override the ones in `outline-minor-mode-map'
+;;    default = (quote (("<M-up>" . comint-previous-prompt) ("<M-down>" . comint-next-prompt) ("<M-left>" . outline-hide-entry) ("<M-right>" . outline-show-entry)))
+;;  `comint-outline-regexp'
+;;    Alist of regexp's to be used for `outline-regexp' in different comint modes.
+;;    default = (quote ((py-ipython-shell-mode . "In \\[[0-9]+\\]: .*") (py-python-shell-mode . ">>> .*") (inferior-ess-mode ... ...) (shell-mode . shell-prompt-pattern) (sql-interactive-mode ... ...)))
 
 ;;; Installation:
 ;;
@@ -89,7 +106,12 @@ when `comint-outline-start' is called."
 		:value-type (function :tag "Command")))
 
 (defcustom comint-outline-regexp
-  '((py-ipython-shell-mode . "In \\[[0-9]+\\]: .*")
+  '((erc-mode lambda
+	      (buf)
+	      (concat "\\(ERC\\|<"
+		      (erc-compute-nick)
+		      "\\)> "))
+    (py-ipython-shell-mode . "In \\[[0-9]+\\]: .*")
     (py-python-shell-mode . ">>> .*")
     (inferior-ess-mode ((equal ess-dialect "R")
 			. "> .*")
@@ -106,7 +128,7 @@ In the latter case each SEXP will be evalled in the comint buffer until one of
 them returns non-nil, in which case the corresponding regexp or variable will be used.
 
 For buffers not matching any of the entries in this list, `comint-prompt-regexp' will be used."
-  :comint 'group
+  :group 'comint
   :type '(alist :key-type (symbol :tag "Major mode")
 		:value-type (choice regexp
 				    (function :tag "Function")
