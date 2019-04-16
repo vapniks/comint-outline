@@ -174,8 +174,6 @@ you could try `outline-previous-visible-heading' & `outline-next-visible-heading
 			 (args-out-of-range pairs)
 			 (error (signal (car err) (cdr err)))))))
   (if (called-interactively-p 'any) (setq pairs (car pairs)))
-  (if (member comint-prompt-regexp '("^" ""))
-      (setq-local comint-prompt-regexp regexp))
   (outline-minor-mode 1)
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map outline-minor-mode-map)
@@ -192,6 +190,7 @@ you could try `outline-previous-visible-heading' & `outline-next-visible-heading
 				   ((listp val)
 				    (cdr (cl-assoc-if (lambda (v) (eval v)) val)))))
 			   (and comint-prompt-regexp
+				(not (member comint-prompt-regexp '("^" "")))
 				(substring comint-prompt-regexp
 					   ;; remove initial "^" if necessary
 					   (if (eq (aref comint-prompt-regexp 0) ?^)
