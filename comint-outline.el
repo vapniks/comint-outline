@@ -191,11 +191,13 @@ you could try `outline-previous-visible-heading' & `outline-next-visible-heading
 				   ((symbolp val) (eval val))
 				   ((listp val)
 				    (cdr (cl-assoc-if (lambda (v) (eval v)) val)))))
-			   (substring comint-prompt-regexp
-				      ;; remove initial "^" if necessary
-				      (if (eq (aref comint-prompt-regexp 0) ?^)
-					  1
-					0)))
+			   (and comint-prompt-regexp
+				(substring comint-prompt-regexp
+					   ;; remove initial "^" if necessary
+					   (if (eq (aref comint-prompt-regexp 0) ?^)
+					       1
+					     0)))
+			   "> ")
 	outline-level (or levelfn (lambda nil 1))))
 
 ;; altered version of `outline-on-heading-p' that works even if heading is in a different field
